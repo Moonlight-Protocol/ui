@@ -15,11 +15,11 @@ In a consumer's `deno.json`:
 ```json
 {
   "imports": {
-    "@moonlight/ui/tokens": "https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.1.0/src/tokens/mod.ts",
-    "@moonlight/ui/nav": "https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.1.0/src/nav/mod.ts",
-    "@moonlight/ui/layout": "https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.1.0/src/layout/mod.ts",
-    "@moonlight/ui/stepper": "https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.1.0/src/stepper/mod.ts",
-    "@moonlight/ui/invite-waitlist": "https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.1.0/src/invite-waitlist/mod.ts"
+    "@moonlight/ui/tokens": "https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.2.0/src/tokens/mod.ts",
+    "@moonlight/ui/nav": "https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.2.0/src/nav/mod.ts",
+    "@moonlight/ui/layout": "https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.2.0/src/layout/mod.ts",
+    "@moonlight/ui/stepper": "https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.2.0/src/stepper/mod.ts",
+    "@moonlight/ui/invite-waitlist": "https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.2.0/src/invite-waitlist/mod.ts"
   }
 }
 ```
@@ -30,19 +30,19 @@ Stylesheets are referenced via `<link rel="stylesheet">` in the consumer's
 ```html
 <link
   rel="stylesheet"
-  href="https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.1.0/src/tokens/tokens.css"
+  href="https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.2.0/src/tokens/tokens.css"
 >
 <link
   rel="stylesheet"
-  href="https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.1.0/src/base-styles/base-styles.css"
+  href="https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.2.0/src/base-styles/base-styles.css"
 >
 <link
   rel="stylesheet"
-  href="https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.1.0/src/nav/nav.css"
+  href="https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.2.0/src/nav/nav.css"
 >
 <link
   rel="stylesheet"
-  href="https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.1.0/src/stepper/stepper.css"
+  href="https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.2.0/src/stepper/stepper.css"
 >
 ```
 
@@ -149,7 +149,8 @@ const view = renderInviteWaitlist({
 ```
 
 Renders the invite-only/waitlist screen used by the 3 console apps' login flows.
-Submits `POST {platformUrl}/api/v1/waitlist` with `{ email, address }`. Calls
+Submits `POST {platformUrl}/api/v1/waitlist` with `{ email, walletPublicKey }`
+(the `walletPublicKey` field carries the value passed in `opts.address`). Calls
 `onDisconnect` when the "Disconnect" link is clicked.
 
 Depends on `base-styles.css` for `.login-container`, `.login-card`,

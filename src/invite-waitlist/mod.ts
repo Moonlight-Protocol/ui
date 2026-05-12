@@ -99,7 +99,7 @@ export function renderInviteWaitlist(
       const res = await fetch(`${opts.platformUrl}/api/v1/waitlist`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, address: opts.address }),
+        body: JSON.stringify({ email, walletPublicKey: opts.address }),
       });
       if (!res.ok) {
         const detail = await res.text().catch(() => "");
