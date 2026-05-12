@@ -1,3 +1,15 @@
+/**
+ * Optional consumer-passed DOM ids. Provide an id here if the consumer's
+ * test contract (or external integration) needs a stable selector on a
+ * rendered element. If a field is omitted, the element renders without
+ * that id. The lib never defaults these values — the consumer owns the
+ * id namespace.
+ */
+export interface InviteWaitlistIds {
+  /** id applied to the email `<input>` element. */
+  emailInput?: string;
+}
+
 export interface RenderInviteWaitlistOptions {
   /** Connected wallet address — shown truncated; included in the waitlist POST body. */
   address: string;
@@ -7,6 +19,8 @@ export interface RenderInviteWaitlistOptions {
   logoSrc?: string;
   /** Fired when the user clicks the "Disconnect" link. */
   onDisconnect?: () => void;
+  /** Consumer-passed DOM ids on internal elements. See {@link InviteWaitlistIds}. */
+  ids?: InviteWaitlistIds;
 }
 
 function truncateAddress(address: string): string {
@@ -53,6 +67,9 @@ export function renderInviteWaitlist(
   emailInput.setAttribute("type", "email");
   emailInput.setAttribute("placeholder", "your@email.com");
   emailInput.setAttribute("autocomplete", "email");
+  if (opts.ids?.emailInput) {
+    emailInput.setAttribute("id", opts.ids.emailInput);
+  }
   formGroup.appendChild(emailInput);
   card.appendChild(formGroup);
 
