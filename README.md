@@ -15,11 +15,11 @@ In a consumer's `deno.json`:
 ```json
 {
   "imports": {
-    "@moonlight/ui/tokens": "https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.3.0/src/tokens/mod.ts",
-    "@moonlight/ui/nav": "https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.3.0/src/nav/mod.ts",
-    "@moonlight/ui/layout": "https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.3.0/src/layout/mod.ts",
-    "@moonlight/ui/stepper": "https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.3.0/src/stepper/mod.ts",
-    "@moonlight/ui/invite-waitlist": "https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.3.0/src/invite-waitlist/mod.ts"
+    "@moonlight/ui/tokens": "https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.3.1/src/tokens/mod.ts",
+    "@moonlight/ui/nav": "https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.3.1/src/nav/mod.ts",
+    "@moonlight/ui/layout": "https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.3.1/src/layout/mod.ts",
+    "@moonlight/ui/stepper": "https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.3.1/src/stepper/mod.ts",
+    "@moonlight/ui/invite-waitlist": "https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.3.1/src/invite-waitlist/mod.ts"
   }
 }
 ```
@@ -30,19 +30,19 @@ Stylesheets are referenced via `<link rel="stylesheet">` in the consumer's
 ```html
 <link
   rel="stylesheet"
-  href="https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.3.0/src/tokens/tokens.css"
+  href="https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.3.1/src/tokens/tokens.css"
 >
 <link
   rel="stylesheet"
-  href="https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.3.0/src/base-styles/base-styles.css"
+  href="https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.3.1/src/base-styles/base-styles.css"
 >
 <link
   rel="stylesheet"
-  href="https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.3.0/src/nav/nav.css"
+  href="https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.3.1/src/nav/nav.css"
 >
 <link
   rel="stylesheet"
-  href="https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.3.0/src/stepper/stepper.css"
+  href="https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.3.1/src/stepper/stepper.css"
 >
 ```
 
@@ -133,7 +133,8 @@ Stylesheet: `nav.css` (renders `.nav-inner`, `.nav-brand`, `.nav-links`,
 ```ts
 import { renderStepper } from "@moonlight/ui/stepper";
 
-const stepper = renderStepper({
+// Mutable array — currentStepId is any string.
+const stepper1 = renderStepper({
   steps: [
     { id: "metadata", label: "Metadata" },
     { id: "fund", label: "Fund" },
@@ -141,11 +142,25 @@ const stepper = renderStepper({
   ],
   currentStepId: "fund",
 });
+
+// `as const` tuple — currentStepId is narrowed to "account" | "treasury".
+// Passing an unknown id is a compile-time error.
+const STEPS = [
+  { id: "account", label: "Account" },
+  { id: "treasury", label: "Treasury" },
+] as const;
+const stepper2 = renderStepper({ steps: STEPS, currentStepId: "treasury" });
 ```
 
 Renders the progress stepper used by onboarding/setup flows. Done steps get a
 `done` modifier and a check glyph; the current step gets `active`. Step list is
 consumer-supplied — no hard-coded step vocabulary.
+
+Signature is generic:
+`renderStepper<T extends ReadonlyArray<StepperStep>>({ steps: T, currentStepId: T[number]["id"] })`.
+This accepts both mutable `StepperStep[]` and readonly `as const` tuples; when
+the consumer uses `as const`, `currentStepId` is constrained to the literal `id`
+values of that tuple at the type level.
 
 Stylesheet: `stepper.css`.
 

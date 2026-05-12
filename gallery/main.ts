@@ -60,7 +60,7 @@ document.getElementById("nav-links")!.appendChild(
   }),
 );
 
-// stepper — three variants
+// stepper — three variants (mutable array)
 const STEPS = [
   { id: "metadata", label: "Metadata" },
   { id: "fund", label: "Fund" },
@@ -75,6 +75,17 @@ document.getElementById("stepper-2")!.appendChild(
 );
 document.getElementById("stepper-4")!.appendChild(
   renderStepper({ steps: STEPS, currentStepId: "invite" }),
+);
+
+// stepper — readonly `as const` variant; currentStepId is narrowed
+// to "account" | "treasury" automatically (try changing to "unknown" and
+// the build will fail type-checking).
+const READONLY_STEPS = [
+  { id: "account", label: "Account" },
+  { id: "treasury", label: "Treasury" },
+] as const;
+document.getElementById("stepper-readonly")!.appendChild(
+  renderStepper({ steps: READONLY_STEPS, currentStepId: "treasury" }),
 );
 
 // invite-waitlist — three variants

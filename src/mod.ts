@@ -11,5 +11,5 @@ export {
 export { baseStylesCssPath, readBaseStylesCss } from "./base-styles/mod.ts";
 
 export type { NavLink, RenderNavOptions } from "./nav/mod.ts";
-export type { RenderStepperOptions, StepperStep } from "./stepper/mod.ts";
+export type { StepperStep } from "./stepper/mod.ts";
 export type { RenderInviteWaitlistOptions } from "./invite-waitlist/mod.ts";
