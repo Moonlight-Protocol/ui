@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>@moonlight/ui — Gallery</title>
+    <link rel="stylesheet" href="/src/tokens/tokens.css">
+    <link rel="stylesheet" href="/src/base-styles/base-styles.css">
+    <link rel="stylesheet" href="/src/nav/nav.css">
+    <link rel="stylesheet" href="/src/stepper/stepper.css">
+    <style>
+      body {
+        padding: 0;
+      }
+      .gallery-section {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1.5rem;
+      }
+      .gallery-section h2 {
+        color: var(--primary);
+        font-size: 1.25rem;
+        margin-bottom: 0.25rem;
+      }
+      .gallery-section p.gallery-caption {
+        color: var(--text-muted);
+        font-size: 0.875rem;
+        margin-bottom: 1rem;
+      }
+      .gallery-variant {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+      }
+      .gallery-variant h3 {
+        color: var(--text-muted);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.75rem;
+      }
+      .gallery-swatch-row {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+      }
+      .gallery-swatch {
+        width: 7rem;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        overflow: hidden;
+        font-size: 0.7rem;
+      }
+      .gallery-swatch .swatch-color {
+        height: 3rem;
+      }
+      .gallery-swatch .swatch-label {
+        padding: 0.4rem 0.5rem;
+        font-family: var(--font-mono);
+        color: var(--text-muted);
+        background: var(--bg);
+      }
+      .gallery-variant > nav {
+        margin: 0 -1.5rem 0;
+      }
+      .gallery-invite-shrink {
+        transform: scale(0.85);
+        transform-origin: top left;
+      }
+    </style>
+  </head>
+  <body>
+    <header
+      style="background: var(--surface); border-bottom: 1px solid var(--border); padding: 1rem 1.5rem"
+    >
+      <div style="max-width: 1200px; margin: 0 auto">
+        <strong style="color: var(--primary)">@moonlight/ui</strong>
+        <span class="version-badge">gallery</span>
+      </div>
+    </header>
+
+    <section class="gallery-section" id="section-tokens">
+      <h2>tokens</h2>
+      <p class="gallery-caption">
+        CSS custom properties. Defined verbatim from the 4 source apps'
+        <code>:root</code> blocks.
+      </p>
+      <div class="gallery-variant">
+        <h3>colors</h3>
+        <div class="gallery-swatch-row" id="token-swatches"></div>
+      </div>
+    </section>
+
+    <section class="gallery-section" id="section-base-styles">
+      <h2>base-styles</h2>
+      <p class="gallery-caption">
+        Shared class definitions. The buttons, badges, and cards below all
+        consume these classes.
+      </p>
+      <div class="gallery-variant">
+        <h3>buttons</h3>
+        <div style="display: flex; gap: 0.75rem; align-items: center">
+          <button class="btn-primary">btn-primary</button>
+          <button class="btn-primary btn-wide" style="max-width: 220px">
+            btn-primary btn-wide
+          </button>
+          <button class="btn-link">btn-link</button>
+        </div>
+      </div>
+      <div class="gallery-variant">
+        <h3>badges</h3>
+        <span class="badge badge-active">active</span>
+        <span class="badge badge-pending" style="margin-left: 0.5rem">
+          pending
+        </span>
+        <span class="badge badge-inactive" style="margin-left: 0.5rem">
+          inactive
+        </span>
+      </div>
+      <div class="gallery-variant">
+        <h3>stat cards</h3>
+        <div class="stats-row">
+          <div class="stat-card active">
+            <span class="stat-label">members</span>
+            <span class="stat-value">42</span>
+          </div>
+          <div class="stat-card pending">
+            <span class="stat-label">pending</span>
+            <span class="stat-value">3</span>
+          </div>
+          <div class="stat-card inactive">
+            <span class="stat-label">revoked</span>
+            <span class="stat-value">1</span>
+          </div>
+        </div>
+      </div>
+      <div class="gallery-variant">
+        <h3>form group</h3>
+        <div class="form-group" style="max-width: 320px">
+          <label>email</label>
+          <input type="email" placeholder="your@email.com">
+        </div>
+      </div>
+    </section>
+
+    <section class="gallery-section" id="section-layout">
+      <h2>layout</h2>
+      <p class="gallery-caption">
+        <code>pageLayout(nav, content)</code> wraps a nav element and content in
+        <code>&lt;div&gt;{nav}&lt;main
+          class="container"&gt;{content}&lt;/main&gt;&lt;/div&gt;</code>.
+      </p>
+      <div class="gallery-variant" id="layout-demo"></div>
+    </section>
+
+    <section class="gallery-section" id="section-nav">
+      <h2>nav</h2>
+      <p class="gallery-caption">
+        <code>renderNav({ brand, version, links, address, onLogout })</code>.
+      </p>
+      <div class="gallery-variant">
+        <h3>brand only</h3>
+        <div id="nav-brand-only"></div>
+      </div>
+      <div class="gallery-variant">
+        <h3>brand + version</h3>
+        <div id="nav-brand-version"></div>
+      </div>
+      <div class="gallery-variant">
+        <h3>brand + version + address + logout</h3>
+        <div id="nav-full"></div>
+      </div>
+      <div class="gallery-variant">
+        <h3>brand + version + links (read-only style)</h3>
+        <div id="nav-links"></div>
+      </div>
+    </section>
+
+    <section class="gallery-section" id="section-stepper">
+      <h2>stepper</h2>
+      <p class="gallery-caption">
+        <code>renderStepper({ steps, currentStepId })</code>.
+      </p>
+      <div class="gallery-variant">
+        <h3>step 1 of 4 active</h3>
+        <div id="stepper-1"></div>
+      </div>
+      <div class="gallery-variant">
+        <h3>step 2 of 4 active</h3>
+        <div id="stepper-2"></div>
+      </div>
+      <div class="gallery-variant">
+        <h3>step 4 of 4 active (last)</h3>
+        <div id="stepper-4"></div>
+      </div>
+    </section>
+
+    <section class="gallery-section" id="section-invite-waitlist">
+      <h2>invite-waitlist</h2>
+      <p class="gallery-caption">
+        <code>renderInviteWaitlist({ address, platformUrl, logoSrc, onDisconnect
+          })</code>. Card shown at 85% scale to fit the gallery row.
+      </p>
+      <div class="gallery-variant">
+        <h3>with disconnect link (no submit performed — demo only)</h3>
+        <div class="gallery-invite-shrink" id="invite-with-disconnect"></div>
+      </div>
+      <div class="gallery-variant">
+        <h3>without disconnect link</h3>
+        <div class="gallery-invite-shrink" id="invite-without-disconnect"></div>
+      </div>
+    </section>
+
+    <script type="module" src="/gallery.js"></script>
+  </body>
+</html>
