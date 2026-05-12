@@ -180,19 +180,30 @@
     <section class="gallery-section" id="section-stepper">
       <h2>stepper</h2>
       <p class="gallery-caption">
-        <code>renderStepper({ steps, currentStepId })</code>.
+        <code>renderStepper&lt;T extends ReadonlyArray&lt;StepperStep&gt;&gt;({
+          steps: T, currentStepId: T[number]["id"] })</code>. Generic — accepts
+        both mutable arrays and readonly <code>as const</code> tuples;
+        <code>currentStepId</code> is narrowed to the literal ids of the passed
+        steps.
       </p>
       <div class="gallery-variant">
-        <h3>step 1 of 4 active</h3>
+        <h3>mutable array — step 1 of 4 active</h3>
         <div id="stepper-1"></div>
       </div>
       <div class="gallery-variant">
-        <h3>step 2 of 4 active</h3>
+        <h3>mutable array — step 2 of 4 active</h3>
         <div id="stepper-2"></div>
       </div>
       <div class="gallery-variant">
-        <h3>step 4 of 4 active (last)</h3>
+        <h3>mutable array — step 4 of 4 active (last)</h3>
         <div id="stepper-4"></div>
+      </div>
+      <div class="gallery-variant">
+        <h3>
+          <code>as const</code> readonly tuple — currentStepId narrowed to
+          "account" | "treasury"
+        </h3>
+        <div id="stepper-readonly"></div>
       </div>
     </section>
 

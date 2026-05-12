@@ -3,13 +3,6 @@ export interface StepperStep {
   label: string;
 }
 
-export interface RenderStepperOptions {
-  /** Ordered list of steps. */
-  steps: StepperStep[];
-  /** Id of the step that is currently active. Steps before it get a `done` modifier. */
-  currentStepId: string;
-}
-
 /**
  * Renders a horizontal progress stepper. The step before `currentStepId`
  * gets `done` (checkmark glyph); the current step gets `active`. Lines
@@ -17,8 +10,21 @@ export interface RenderStepperOptions {
  *
  * The step vocabulary (ids + labels) is fully consumer-supplied. This
  * component renders only the visual structure.
+ *
+ * The signature is generic over `T`, the steps array type, so consumers
+ * can pass either a mutable `StepperStep[]` or a readonly `as const` tuple.
+ * When `steps` is `as const`, `currentStepId` is constrained to the literal
+ * `id` values of that tuple at the type level — passing an unknown id
+ * fails type-checking.
  */
-export function renderStepper(opts: RenderStepperOptions): HTMLElement {
+export function renderStepper<T extends ReadonlyArray<StepperStep>>(
+  opts: {
+    /** Ordered list of steps. May be readonly (`as const`) or mutable. */
+    steps: T;
+    /** Id of the currently active step; constrained to one of the ids in `steps`. */
+    currentStepId: T[number]["id"];
+  },
+): HTMLElement {
   const stepper = document.createElement("div");
   stepper.className = "onboarding-stepper";
 
