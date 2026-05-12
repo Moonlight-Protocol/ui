@@ -199,8 +199,9 @@
     <section class="gallery-section" id="section-invite-waitlist">
       <h2>invite-waitlist</h2>
       <p class="gallery-caption">
-        <code>renderInviteWaitlist({ address, platformUrl, logoSrc, onDisconnect
-          })</code>. Card shown at 85% scale to fit the gallery row.
+        <code>renderInviteWaitlist({ address, platformUrl, logoSrc,
+          onDisconnect, ids })</code>. Card shown at 85% scale to fit the
+        gallery row.
       </p>
       <div class="gallery-variant">
         <h3>with disconnect link (no submit performed — demo only)</h3>
@@ -209,6 +210,13 @@
       <div class="gallery-variant">
         <h3>without disconnect link</h3>
         <div class="gallery-invite-shrink" id="invite-without-disconnect"></div>
+      </div>
+      <div class="gallery-variant">
+        <h3>
+          with <code>ids: { emailInput: "demo-email" }</code> — inspect to see
+          id="demo-email" on the input
+        </h3>
+        <div class="gallery-invite-shrink" id="invite-with-ids"></div>
       </div>
     </section>
 

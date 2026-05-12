@@ -15,11 +15,11 @@ In a consumer's `deno.json`:
 ```json
 {
   "imports": {
-    "@moonlight/ui/tokens": "https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.2.0/src/tokens/mod.ts",
-    "@moonlight/ui/nav": "https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.2.0/src/nav/mod.ts",
-    "@moonlight/ui/layout": "https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.2.0/src/layout/mod.ts",
-    "@moonlight/ui/stepper": "https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.2.0/src/stepper/mod.ts",
-    "@moonlight/ui/invite-waitlist": "https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.2.0/src/invite-waitlist/mod.ts"
+    "@moonlight/ui/tokens": "https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.3.0/src/tokens/mod.ts",
+    "@moonlight/ui/nav": "https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.3.0/src/nav/mod.ts",
+    "@moonlight/ui/layout": "https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.3.0/src/layout/mod.ts",
+    "@moonlight/ui/stepper": "https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.3.0/src/stepper/mod.ts",
+    "@moonlight/ui/invite-waitlist": "https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.3.0/src/invite-waitlist/mod.ts"
   }
 }
 ```
@@ -30,25 +30,39 @@ Stylesheets are referenced via `<link rel="stylesheet">` in the consumer's
 ```html
 <link
   rel="stylesheet"
-  href="https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.2.0/src/tokens/tokens.css"
+  href="https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.3.0/src/tokens/tokens.css"
 >
 <link
   rel="stylesheet"
-  href="https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.2.0/src/base-styles/base-styles.css"
+  href="https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.3.0/src/base-styles/base-styles.css"
 >
 <link
   rel="stylesheet"
-  href="https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.2.0/src/nav/nav.css"
+  href="https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.3.0/src/nav/nav.css"
 >
 <link
   rel="stylesheet"
-  href="https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.2.0/src/stepper/stepper.css"
+  href="https://raw.githubusercontent.com/Moonlight-Protocol/ui/v0.3.0/src/stepper/stepper.css"
 >
 ```
 
 `raw.githubusercontent.com` serves `text/plain`. If the consumer's app bundles
 CSS at build time, the build script should fetch and concatenate, not rely on
 browser-side `<link>` of raw URLs.
+
+## Consumer-passed ids
+
+Components in this lib do not hardcode DOM `id` attributes. When a consumer's
+test contract (or external integration) needs a stable selector on a specific
+rendered element, the component exposes an optional `ids?:` option that the
+consumer fills in. Lib defaults are never set — if `ids.someElement` is omitted,
+the element renders without that id.
+
+Today `renderInviteWaitlist` is the only component with an `ids` option, because
+the local-dev playwright `invite-gate.spec.ts` test asserts on
+`#waitlist-email`. **New components should not preemptively add `ids?:`** — add
+it only when a real consumer contract surfaces the need, so the lib surface
+stays minimal.
 
 ## Components
 
@@ -145,6 +159,7 @@ const view = renderInviteWaitlist({
   platformUrl: "https://api.example.com",
   logoSrc: "/moonlight.png",
   onDisconnect: () => {/* consumer's disconnect logic */},
+  ids: { emailInput: "waitlist-email" },
 });
 ```
 
@@ -152,6 +167,10 @@ Renders the invite-only/waitlist screen used by the 3 console apps' login flows.
 Submits `POST {platformUrl}/api/v1/waitlist` with `{ email, walletPublicKey }`
 (the `walletPublicKey` field carries the value passed in `opts.address`). Calls
 `onDisconnect` when the "Disconnect" link is clicked.
+
+| Option           | Type                  | Behavior                                                                                                                                 |
+| ---------------- | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `ids.emailInput` | `string \| undefined` | If set, applied as the `id` attribute on the email `<input>`. Omitted by default — no id is set. Use this to wire up E2E test selectors. |
 
 Depends on `base-styles.css` for `.login-container`, `.login-card`,
 `.btn-primary`, `.btn-wide`, `.btn-link`, `.error-text`, `.form-group`, `.mono`,

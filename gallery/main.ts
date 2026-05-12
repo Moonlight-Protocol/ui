@@ -77,7 +77,7 @@ document.getElementById("stepper-4")!.appendChild(
   renderStepper({ steps: STEPS, currentStepId: "invite" }),
 );
 
-// invite-waitlist — two variants
+// invite-waitlist — three variants
 document.getElementById("invite-with-disconnect")!.appendChild(
   renderInviteWaitlist({
     address: "GABCDEFGHIJKLMNOPQRSTUV",
@@ -89,5 +89,12 @@ document.getElementById("invite-without-disconnect")!.appendChild(
   renderInviteWaitlist({
     address: "GABCDEFGHIJKLMNOPQRSTUV",
     platformUrl: "https://example.test",
+  }),
+);
+document.getElementById("invite-with-ids")!.appendChild(
+  renderInviteWaitlist({
+    address: "GABCDEFGHIJKLMNOPQRSTUV",
+    platformUrl: "https://example.test",
+    ids: { emailInput: "demo-email" },
   }),
 );

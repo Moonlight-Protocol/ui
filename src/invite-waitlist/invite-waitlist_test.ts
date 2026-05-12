@@ -87,3 +87,26 @@ Deno.test("renderInviteWaitlist omits disconnect link when onDisconnect not prov
   });
   assertEquals(el.querySelector(".btn-link"), null);
 });
+
+Deno.test("renderInviteWaitlist applies ids.emailInput to the email input when provided", () => {
+  mountTestDom();
+  const el = renderInviteWaitlist({
+    address: "GABCDEFGHIJKLMNOP",
+    platformUrl: "https://example.test",
+    ids: { emailInput: "test-email-id" },
+  });
+  const input = el.querySelector("input[type='email']");
+  assert(input, "email input should be present");
+  assertEquals(input!.getAttribute("id"), "test-email-id");
+});
+
+Deno.test("renderInviteWaitlist does not set an id on the email input when ids is omitted", () => {
+  mountTestDom();
+  const el = renderInviteWaitlist({
+    address: "GABCDEFGHIJKLMNOP",
+    platformUrl: "https://example.test",
+  });
+  const input = el.querySelector("input[type='email']");
+  assert(input, "email input should be present");
+  assertEquals(input!.getAttribute("id"), null);
+});
