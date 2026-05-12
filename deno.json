@@ -3,14 +3,20 @@
   "version": "0.0.1",
   "license": "MIT",
   "exports": {
-    ".": "./src/mod.ts"
+    ".": "./src/mod.ts",
+    "./tokens": "./src/tokens/mod.ts",
+    "./base-styles": "./src/base-styles/mod.ts",
+    "./layout": "./src/layout/mod.ts",
+    "./nav": "./src/nav/mod.ts",
+    "./stepper": "./src/stepper/mod.ts",
+    "./invite-waitlist": "./src/invite-waitlist/mod.ts"
   },
   "tasks": {
     "test": "deno test --allow-read --allow-net src/",
     "fmt": "deno fmt",
     "fmt:check": "deno fmt --check",
     "lint": "deno lint",
-    "gallery": "deno run --allow-read --allow-net gallery/serve.ts"
+    "gallery": "deno run --allow-read --allow-net --allow-env --allow-run --allow-sys gallery/serve.ts"
   },
   "compilerOptions": {
     "strict": true,
@@ -21,6 +27,8 @@
     "@std/http": "jsr:@std/http@^1.0.0",
     "@std/path": "jsr:@std/path@^1.0.0",
     "@std/media-types": "jsr:@std/media-types@^1.0.0",
+    "@luca/esbuild-deno-loader": "jsr:@luca/esbuild-deno-loader@^0.11.0",
+    "esbuild": "npm:esbuild@^0.25.0",
     "deno_dom": "jsr:@b-fuze/deno-dom@^0.1.49"
   },
   "fmt": {
