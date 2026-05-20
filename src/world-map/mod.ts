@@ -31,6 +31,13 @@ export interface RenderWorldMapOptions {
   onSelect?: (countryCode: string) => void;
   /** Fires when an already-selected country is clicked. Optional convenience. */
   onDeselect?: (countryCode: string) => void;
+  /**
+   * Fires when the pointer enters / leaves a country. The callback receives
+   * the upper-case ISO code on enter, and `null` on leave. The component
+   * itself does not toggle any hover state — apply visuals reactively via
+   * `setSlot` from the handler if you want hover-driven highlighting.
+   */
+  onHover?: (countryCode: string | null) => void;
   /** Path to the simple-world-map SVG. Default `/world-map.svg`. */
   svgUrl?: string;
   /** Optional aria-label override. */
@@ -42,6 +49,18 @@ export interface WorldMapHandle {
   element: HTMLElement;
   /** Replace the selected set; only differing countries get re-styled. */
   setSelected(codes: string[]): void;
+  /**
+   * Apply a CSS class slot to a set of country codes (or replace the prior
+   * set for that slot). Slot is an arbitrary CSS class name — the component
+   * has no opinion about what each slot *means*, only that calling
+   * `setSlot("foo", ["US"])` will add `.foo` to the US country group and
+   * remove `.foo` from every other country. Pass `[]` to clear a slot.
+   *
+   * Consumers ship CSS rules like `.world-map-country.<slot> { fill: … }`
+   * to colour the slot. Slot names are sanitized to a CSS-class-safe form;
+   * empty / invalid slot strings are dropped.
+   */
+  setSlot(slot: string, codes: string[]): void;
   /** Currently-selected codes in the order they were last set. */
   getSelected(): string[];
 }
@@ -67,11 +86,30 @@ export async function renderWorldMap(
 
   // Selected set is mutable; keep insertion order for getSelected().
   let selected = new Set<string>((options.selected ?? []).map(normalize));
+  // Arbitrary CSS-class slots applied via setSlot. Storing them in a map
+  // lets a fresh setSlot("foo", [...]) cheaply diff against the prior set
+  // and add/remove the class only on the differing country elements.
+  const slots: Map<string, Set<string>> = new Map();
+  // Currently-hovered country, or null when the pointer is outside any
+  // country. Used to debounce onHover so it only fires on actual changes.
+  let hovered: string | null = null;
 
   let svgRoot: SVGSVGElement | null = null;
 
   function normalize(code: string): string {
     return code.trim().toUpperCase();
+  }
+
+  /**
+   * CSS class names must start with `[A-Za-z_]` and contain only
+   * `[A-Za-z0-9_-]`. Anything else is dropped to keep selectors valid
+   * and untrusted slot inputs harmless.
+   */
+  function sanitizeSlot(slot: string): string | null {
+    const trimmed = slot.trim();
+    if (!trimmed) return null;
+    if (!/^[A-Za-z_][A-Za-z0-9_-]*$/.test(trimmed)) return null;
+    return trimmed;
   }
 
   function applyFills(): void {
@@ -93,6 +131,30 @@ export async function renderWorldMap(
     const wasSelected = selected.has(code);
     options.onSelect?.(code);
     if (wasSelected) options.onDeselect?.(code);
+  }
+
+  function onHostMouseOver(ev: MouseEvent): void {
+    if (!options.onHover) return;
+    const target = ev.target as Element | null;
+    const owner = target?.closest("[data-country]") as HTMLElement | null;
+    const code = owner?.dataset.country ?? null;
+    if (code !== hovered) {
+      hovered = code;
+      options.onHover?.(code);
+    }
+  }
+
+  function onHostMouseOut(ev: MouseEvent): void {
+    if (!options.onHover) return;
+    // If we're leaving toward another country (or a child path inside one),
+    // mouseover on the new target will fire next and update `hovered`. Only
+    // fire onHover(null) when leaving the host entirely.
+    const related = ev.relatedTarget as Element | null;
+    const stillInside = related?.closest("[data-country]");
+    if (!stillInside && hovered !== null) {
+      hovered = null;
+      options.onHover?.(null);
+    }
   }
 
   function buildSvg(raw: string): SVGSVGElement {
@@ -151,6 +213,8 @@ export async function renderWorldMap(
     host.appendChild(svgRoot);
     applyFills();
     host.addEventListener("click", onHostClick);
+    host.addEventListener("mouseover", onHostMouseOver);
+    host.addEventListener("mouseout", onHostMouseOut);
   } catch (err) {
     host.classList.add("world-map-error");
     host.textContent = "Map unavailable";
@@ -164,8 +228,41 @@ export async function renderWorldMap(
       selected = new Set(codes.map(normalize));
       applyFills();
     },
+    setSlot(slot: string, codes: string[]): void {
+      if (!svgRoot) return;
+      const className = sanitizeSlot(slot);
+      if (className === null) return;
+      const next = new Set<string>(codes.map(normalize));
+      const prev = slots.get(className) ?? new Set<string>();
+      // Remove the slot class from countries no longer in the set.
+      for (const code of prev) {
+        if (!next.has(code)) {
+          const el = svgRoot.querySelector<SVGElement>(
+            `[data-country="${cssEscape(code)}"]`,
+          );
+          el?.classList.remove(className);
+        }
+      }
+      // Add the slot class to newly included countries.
+      for (const code of next) {
+        if (!prev.has(code)) {
+          const el = svgRoot.querySelector<SVGElement>(
+            `[data-country="${cssEscape(code)}"]`,
+          );
+          el?.classList.add(className);
+        }
+      }
+      if (next.size === 0) slots.delete(className);
+      else slots.set(className, next);
+    },
     getSelected(): string[] {
       return Array.from(selected);
     },
   };
+}
+
+/** Attribute selectors only accept a narrow charset; country codes are
+ *  ISO 3166-1 alpha-2 (all letters), so escape just-in-case. */
+function cssEscape(value: string): string {
+  return value.replace(/(["\\])/g, "\\$1");
 }
