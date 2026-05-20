@@ -7,6 +7,7 @@ import { pageLayout } from "../src/layout/mod.ts";
 import { renderNav } from "../src/nav/mod.ts";
 import { renderStepper } from "../src/stepper/mod.ts";
 import { renderInviteWaitlist } from "../src/invite-waitlist/mod.ts";
+import { getCountryName, renderWorldMap } from "../src/world-map/mod.ts";
 
 // tokens — render a swatch per color token.
 const swatchRow = document.getElementById("token-swatches")!;
@@ -109,3 +110,54 @@ document.getElementById("invite-with-ids")!.appendChild(
     ids: { emailInput: "demo-email" },
   }),
 );
+
+// world-map — three variants. The SVG asset lives at gallery/world-map.svg
+// for the demo; consumers ship their own copy in their public/ directory.
+const WORLD_MAP_SVG = "/gallery/world-map.svg";
+
+renderWorldMap({ svgUrl: WORLD_MAP_SVG })
+  .then((handle) => {
+    document.getElementById("world-map-empty")!.appendChild(handle.element);
+  })
+  .catch((err) => console.warn("world-map empty demo failed:", err));
+
+renderWorldMap({
+  svgUrl: WORLD_MAP_SVG,
+  selected: ["US", "UY", "DE", "JP", "SG"],
+})
+  .then((handle) => {
+    document.getElementById("world-map-selected")!.appendChild(handle.element);
+  })
+  .catch((err) => console.warn("world-map selected demo failed:", err));
+
+renderWorldMap({
+  svgUrl: WORLD_MAP_SVG,
+  onSelect: (code) => {
+    const status = document.getElementById("world-map-interactive-status")!;
+    const interactiveHandle = interactiveRef;
+    if (!interactiveHandle) return;
+    const current = new Set(interactiveHandle.getSelected());
+    if (current.has(code)) current.delete(code);
+    else current.add(code);
+    interactiveHandle.setSelected(Array.from(current));
+    status.textContent = current.size === 0
+      ? "no countries selected"
+      : `selected: ${
+        Array.from(current)
+          .map((c) => `${c} (${getCountryName(c)})`)
+          .join(", ")
+      }`;
+  },
+})
+  .then((handle) => {
+    interactiveRef = handle;
+    document.getElementById("world-map-interactive")!.appendChild(
+      handle.element,
+    );
+  })
+  .catch((err) => console.warn("world-map interactive demo failed:", err));
+
+// Late-bound handle for the interactive demo — the onSelect callback above
+// closes over this binding rather than the handle itself so the click
+// handler is available before the SVG finishes loading.
+let interactiveRef: Awaited<ReturnType<typeof renderWorldMap>> | null = null;

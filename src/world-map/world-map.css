@@ -1,0 +1,73 @@
+/*
+ * Styles for the @moonlight/ui world-map component.
+ *
+ * Consumers should fetch this file at build time alongside tokens.css /
+ * base-styles.css. The component itself ships unstyled — every visual
+ * rule lives here so dark / light themes can be swapped by overriding
+ * the tokens upstream.
+ */
+
+.world-map-host {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background: transparent;
+}
+
+.world-map-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Baseline land fill for every country / region path in the SVG —
+   simple-world-map.svg ships paths with no fill attribute (default
+   black), and not every ISO code is in our COUNTRIES table, so any
+   untagged path would render as black against the dark page bg. */
+.world-map-svg path,
+.world-map-svg g[id] {
+  fill: var(--border);
+  stroke: var(--bg);
+  stroke-width: 0.4;
+}
+
+.world-map-country {
+  fill: var(--border);
+  stroke: var(--bg);
+  stroke-width: 0.4;
+  cursor: pointer;
+  transition: fill 120ms ease-out;
+}
+
+.world-map-country path {
+  /* Inner paths inside a tagged <g> should inherit the same fill so the
+     whole country lights up on selection. */
+  fill: inherit;
+  stroke: inherit;
+  stroke-width: inherit;
+}
+
+.world-map-country:hover {
+  fill: var(--primary-hover);
+}
+
+.world-map-country:hover path {
+  fill: var(--primary-hover);
+}
+
+.world-map-country.selected {
+  fill: var(--primary);
+}
+
+.world-map-country.selected path {
+  fill: var(--primary);
+}
+
+.world-map-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  font-style: italic;
+}

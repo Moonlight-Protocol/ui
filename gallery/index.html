@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/src/base-styles/base-styles.css">
     <link rel="stylesheet" href="/src/nav/nav.css">
     <link rel="stylesheet" href="/src/stepper/stepper.css">
+    <link rel="stylesheet" href="/src/world-map/world-map.css">
     <style>
       body {
         padding: 0;
@@ -67,6 +68,10 @@
       .gallery-invite-shrink {
         transform: scale(0.85);
         transform-origin: top left;
+      }
+      .gallery-world-map-host {
+        width: 100%;
+        height: 360px;
       }
     </style>
   </head>
@@ -228,6 +233,34 @@
           id="demo-email" on the input
         </h3>
         <div class="gallery-invite-shrink" id="invite-with-ids"></div>
+      </div>
+    </section>
+
+    <section class="gallery-section" id="section-world-map">
+      <h2>world-map</h2>
+      <p class="gallery-caption">
+        <code>renderWorldMap({ selected, onSelect, svgUrl })</code>. Returns a
+        <code>WorldMapHandle</code> with <code>setSelected(codes)</code> for
+        live updates. Click any country in the variants below — the selected set
+        updates in place and a toast shows below the map.
+      </p>
+      <div class="gallery-variant">
+        <h3>empty selection — every country in the base palette</h3>
+        <div class="gallery-world-map-host" id="world-map-empty"></div>
+      </div>
+      <div class="gallery-variant">
+        <h3>pre-selected jurisdictions (US, UY, DE, JP, SG)</h3>
+        <div class="gallery-world-map-host" id="world-map-selected"></div>
+      </div>
+      <div class="gallery-variant">
+        <h3>interactive — click a country to toggle</h3>
+        <div class="gallery-world-map-host" id="world-map-interactive"></div>
+        <p
+          id="world-map-interactive-status"
+          class="gallery-caption"
+          style="margin-top: 0.5rem"
+        >
+        </p>
       </div>
     </section>
 
