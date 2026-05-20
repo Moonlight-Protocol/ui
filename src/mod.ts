@@ -9,6 +9,14 @@ export {
   tokensCssPath,
 } from "./tokens/mod.ts";
 export { baseStylesCssPath, readBaseStylesCss } from "./base-styles/mod.ts";
+export {
+  COUNTRIES,
+  type CountryInfo,
+  getCountryName,
+  renderWorldMap,
+  type RenderWorldMapOptions,
+  type WorldMapHandle,
+} from "./world-map/mod.ts";
 
 export type { NavLink, RenderNavOptions } from "./nav/mod.ts";
 export type { StepperStep } from "./stepper/mod.ts";

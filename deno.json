@@ -9,7 +9,8 @@
     "./layout": "./src/layout/mod.ts",
     "./nav": "./src/nav/mod.ts",
     "./stepper": "./src/stepper/mod.ts",
-    "./invite-waitlist": "./src/invite-waitlist/mod.ts"
+    "./invite-waitlist": "./src/invite-waitlist/mod.ts",
+    "./world-map": "./src/world-map/mod.ts"
   },
   "tasks": {
     "test": "deno test --allow-read --allow-net src/",
