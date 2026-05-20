@@ -20,6 +20,17 @@
   display: block;
 }
 
+/* Baseline land fill for every country / region path in the SVG —
+   simple-world-map.svg ships paths with no fill attribute (default
+   black), and not every ISO code is in our COUNTRIES table, so any
+   untagged path would render as black against the dark page bg. */
+.world-map-svg path,
+.world-map-svg g[id] {
+  fill: var(--border);
+  stroke: var(--bg);
+  stroke-width: 0.4;
+}
+
 .world-map-country {
   fill: var(--border);
   stroke: var(--bg);
